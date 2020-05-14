@@ -19,12 +19,13 @@ class FilterReviewListSerializer(serializers.ListSerializer):
         return super().to_representation(data)
 
 
-class RecursiveSerializer(serializers.ModelSerializer):
+class RecursiveSerializer(serializers.Serializer):
     """Вывод рекирусивно список коментариев"""
 
     def to_representation(self, instance):
         serializer = self.parent.parent.__class__(instance, context=self.context)
         return serializer.data
+
 
 
 class CreateRatingSerializer(serializers.ModelSerializer):

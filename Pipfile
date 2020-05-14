@@ -12,6 +12,7 @@ django-ckeditor = "*"
 django-filter = "*"
 djoser = "*"
 djangorestframework-simplejwt = "*"
+drf-yasg = "*"
 
 [dev-packages]
 
