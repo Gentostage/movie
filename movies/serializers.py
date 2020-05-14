@@ -53,8 +53,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ('name', 'text', 'children')
 
-
-class ActorListSerialize(serializers.ModelSerializer):
+class ActorListSerializer(serializers.ModelSerializer):
     """Вывод списка актера и режесеров"""
 
     class Meta:
@@ -62,7 +61,7 @@ class ActorListSerialize(serializers.ModelSerializer):
         fields = ('id', 'name', 'image')
 
 
-class ActorDetailSerialize(serializers.ModelSerializer):
+class ActorDetailSerializer(serializers.ModelSerializer):
     """Вывод актера или режесеров"""
 
     class Meta:
@@ -83,8 +82,8 @@ class MovieListSerializer(serializers.ModelSerializer):
 class MovieDetailSerializer(serializers.ModelSerializer):
     """Список фильмов"""
     category = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    directors = ActorListSerialize(read_only=True, many=True)
-    actors = ActorListSerialize(read_only=True, many=True)
+    directors = ActorListSerializer(read_only=True, many=True)
+    actors = ActorListSerializer(read_only=True, many=True)
     genres = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
     reviews = ReviewSerializer(many=True)
 

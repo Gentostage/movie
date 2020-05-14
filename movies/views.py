@@ -1,5 +1,5 @@
 from django.db import models
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Movie, Actor
 from .serializers import (
@@ -7,29 +7,27 @@ from .serializers import (
     MovieDetailSerializer,
     ReviewCreateSerializer,
     CreateRatingSerializer,
-    ActorListSerialize,
-    ActorDetailSerialize
+    ActorListSerializer,
+    ActorDetailSerializer
 )
 from .service import get_client_ip, MovieFilter
 
 
-class ActorsListView(generics.ListAPIView):
+class ActorsViewSet(viewsets.ReadOnlyModelViewSet):
     """Вывод Списка актеров"""
 
     queryset = Actor.objects.all()
-    serializer_class = ActorListSerialize
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ActorListSerializer
+        elif self.action == "retrieve":
+            return ActorDetailSerializer
 
 
-class ActorsDetailView(generics.RetrieveAPIView):
-    """Вывод Списка актеров"""
 
-    queryset = Actor.objects.all()
-    serializer_class = ActorDetailSerialize
-
-
-class MovieListView(generics.ListAPIView):
+class MovieViewSet(viewsets.ReadOnlyModelViewSet):
     """Вывод списков фильмов"""
-    serializer_class = MovieListSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = MovieFilter
 
@@ -41,21 +39,20 @@ class MovieListView(generics.ListAPIView):
         )
         return movies
 
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return MovieListSerializer
+        elif self.action == "retrieve":
+            return MovieDetailSerializer
 
-class MovieDetailView(generics.RetrieveAPIView):
-    """Вывод фильма"""
 
-    queryset = Movie.objects.filter(draft=False)
-    serializer_class = MovieDetailSerializer
-
-
-class ReviewCreateView(generics.CreateAPIView):
+class ReviewCreateViewSet(viewsets.ModelViewSet):
     """Добавление отзыва к фильму"""
 
     serializer_class = ReviewCreateSerializer
 
 
-class AddStarRatingView(generics.CreateAPIView):
+class AddStarRatingViewSet(viewsets.ModelViewSet):
     """Добавление рейтинга фильму"""
 
     serializer_class = CreateRatingSerializer
