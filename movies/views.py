@@ -1,8 +1,6 @@
 from django.db import models
 from rest_framework import generics
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Movie, Actor
 from .serializers import (
     MovieListSerializer,
@@ -12,7 +10,7 @@ from .serializers import (
     ActorListSerialize,
     ActorDetailSerialize
 )
-from .service import get_client_ip
+from .service import get_client_ip, MovieFilter
 
 
 class ActorsListView(generics.ListAPIView):
@@ -32,6 +30,8 @@ class ActorsDetailView(generics.RetrieveAPIView):
 class MovieListView(generics.ListAPIView):
     """Вывод списков фильмов"""
     serializer_class = MovieListSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = MovieFilter
 
     def get_queryset(self):
         movies = Movie.objects.filter(draft=False).annotate(
